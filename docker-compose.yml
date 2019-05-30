@@ -1,0 +1,64 @@
+version: "3.4"
+
+networks:
+  frontend: 
+  backend: 
+
+### 这里定义了mysql所用到的数据卷
+volumes:
+  mysql-data:
+
+
+services:
+  mysql:
+    # container_name: project1_nginx
+    build: ./mysql
+    ports:
+      - "33060:3306"  
+    networks:
+      - backend
+    volumes:
+      - mysql-data:/var/lib/mysql ### 数据卷，mysql数据就存放在这里
+      - ./mysql/logs:/logs
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - backend
+
+  php:
+    expose:
+      - "9000"
+    # container_name: project1_nginx
+    build: ./php
+    volumes:
+      - ./www:/var/www/html
+    networks:
+      - frontend
+      - backend
+    links:
+      - mysql
+      - redis
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    # container_name: project1_nginx
+    build: ./nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./www:/var/www/html
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    links:
+      - php
+    networks:
+      - frontend
+    depends_on:
+      - php
+
+
