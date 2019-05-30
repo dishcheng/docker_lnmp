@@ -17,6 +17,8 @@ services:
       - "33060:3306"  
     networks:
       - backend
+    restart: on-failure:3
+
     volumes:
       - mysql-data:/var/lib/mysql ### 数据卷，mysql数据就存放在这里
       - ./mysql/logs:/logs
@@ -34,7 +36,7 @@ services:
     # container_name: project1_nginx
     build: ./php
     volumes:
-      - ./www:/var/www/html
+      - /Users/caicheng/code/php/laravel_init:/var/www/laravel_init
     networks:
       - frontend
       - backend
@@ -51,7 +53,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./www:/var/www/html
+      - /Users/caicheng/code/php/laravel_init:/var/www/laravel_init
       - ./nginx/logs:/var/log/nginx
       - ./nginx/conf.d:/etc/nginx/conf.d
     links:
