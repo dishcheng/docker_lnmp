@@ -11,7 +11,7 @@ volumes:
 
 services:
   mysql:
-    # container_name: project1_nginx
+    container_name: mysql_service
     build: ./mysql
     ports:
       - "33060:3306"  
@@ -24,6 +24,7 @@ services:
       - ./mysql/logs:/logs
   
   redis:
+    container_name: redis_service
     image: redis:latest
     ports:
       - "6380:6379"
@@ -33,7 +34,7 @@ services:
   php:
     expose:
       - "9000"
-    # container_name: project1_nginx
+    container_name: php_service
     build: ./php
     volumes:
       - /Users/caicheng/code/php/laravel_init:/var/www/laravel_init
@@ -48,7 +49,7 @@ services:
       - redis
 
   nginx:
-    # container_name: project1_nginx
+    container_name: nginx_service
     build: ./nginx
     ports:
       - "8081:80"
